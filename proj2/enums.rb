@@ -1,5 +1,3 @@
-require 'pry'
-
 module Enumerable
   def my_each 
     return self unless block_given?
@@ -109,6 +107,20 @@ module Enumerable
     
     output
   end
+  
+  #if no symbol options
+  
+  def my_inject_nosym(output = nil)
+    raise LocalJumpError, "no block given" unless block_given?
+    
+    first = output ? 0 : 1
+    output ||= self[0]
+    
+    self[first..-1].my_each { |i| output = yield output, i }    
+    
+    output
+  end
+  
   
   def my_map_proc(proc)
     output = []    
