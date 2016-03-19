@@ -22,38 +22,53 @@ class Game
   
   private
   
-  def display(board)
+  def display(message, *additional_info)
+    print case message
+          when :win then "We have a winner!  #{current_player.name} won as #{current_player.sign}\n"
+          when :draw then "It's a draw!\n"
+          when :name_plz then "What is your name? "
+          when :sign_plz then "What sign do you want to play as? "
+          when :board then board.show
+          when :sign_taken then "\"#{additional_info[0]}\" is taken. Please enter a different sign.\n"
+          end
   end
   
   def check_status(board)
     if board.has_a_line?
-      end_game("win")
+      end_game(:win)
     elsif board.is_full?
-      end_game("draw")
+      end_game(:draw)
     end
   end
   
   def end_game(result)
-    board.show
-    case result
-    when "win"
-      puts "We have a winner!  #{current_player.name} won as #{current_player.symbol}"
-    when "draw"
-      puts "We have a draw!"
-    end
+    display(:board)
+    display(result)
     exit
   end
   
   def set_up(players)
-    players[0].name, players[0].symbol = get_name("crosses"), "X"
-    players[1].name, players[1].symbol = get_name("noughts"), "O"
+    2.times do
+      get_name(current_player)
+      get_sign(current_player) 
+      next_player
+    end
   end
 
-  def get_name(symbol)
-    print "Please enter your name to play as #{symbol}: "
-    gets.chomp
+  def get_name(player)
+    display(:name_plz)
+    player.name = gets.chomp
   end
 
+  def get_sign(player)
+    display(:sign_plz)
+    loop do
+      player.sign = gets.chomp[0]
+      player.sign == players[1].sign ? display(:sign_taken, player.sign) : break
+    end
+    puts "You are #{player.sign}" 
+  end
+  
   def current_player
     players[0]
   end
@@ -64,11 +79,11 @@ class Game
 
   def take_turn
     loop do 
-      puts "\n#{current_player.name} (#{current_player.symbol})\n=============="
+      puts "\n#{current_player.name} (#{current_player.sign})\n=============="
       spot = current_player.get_spot
       
       if board.is_valid?(spot)
-        board.update(spot, current_player.symbol)
+        board.update(spot, current_player.sign.to_s)
         break
       end
       

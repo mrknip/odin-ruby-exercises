@@ -1,9 +1,9 @@
 class Player
 
-  attr_accessor :type, :symbol, :name
+  attr_accessor :type, :sign, :name
   
   def initialize
-    @symbol = ""
+    @sign = ""
     @type = :human
     @name = ""
   end
