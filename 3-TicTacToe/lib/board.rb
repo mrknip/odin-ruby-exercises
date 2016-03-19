@@ -59,9 +59,9 @@ class Board
     display.join
   end
   
-  def check(line_array)
-    line_array.each do |spots|
-      return true if spots.all? { |s| s == "X" } || spots.all? { |s| s == "O" }
+  def check(array_of_lines)
+    array_of_lines.each do |line|
+      return true if line.uniq.size == 1 && line.compact.size == line.length
     end
     false
   end
