@@ -1,6 +1,6 @@
-require './game'
-require './player'
-require './board'
+require './lib/game'
+require './lib/player'
+require './lib/board'
 
 game = Game.new
 game.play
