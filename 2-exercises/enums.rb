@@ -108,6 +108,28 @@ module Enumerable
     output
   end
   
+  def my_inject2(*params)
+    enum = self.dup
+    
+    if block_given?
+      enum.unshift(params.first) unless params.empty?
+      output = enum.first
+      
+      enum[1..-1].my_each { |i| output = yield output, i }
+    elsif params.size > 0
+      raise TypeError, "#{params} is not a symbol or a string" unless params.last.is_a?(Symbol) || params.last.is_a?(String)
+      
+      enum.unshift(params.first) unless params.first.is_a?(Symbol) || params.first.is_a?(String)
+      output = enum.first
+      
+      enum[1..-1].my_each { |i| output = output.send(params.last, i) }
+    else
+      raise LocalJumpError, "no block given"
+    end
+    
+    output
+  end
+  
   #if no symbol options
   
   def my_inject_nosym(output = nil)
