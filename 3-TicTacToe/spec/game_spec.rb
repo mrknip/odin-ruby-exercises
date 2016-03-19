@@ -30,10 +30,6 @@ describe Game do
       @game.send(:current_player).should be == @game.players[0]
     end
   
-    it 'gets player moves in turn'
-
-    it 'displays the move before each turn'
-  
     it 'checks for a win'
   
     it 'checks for a draw'
@@ -42,8 +38,4 @@ describe Game do
 
     it 'exits the game once it has finished'
   end
-    
-  
-  
-  
 end
