@@ -4,7 +4,7 @@ require './lib/board'
 module TicTacToe
   class Player
 
-    attr_accessor :type, :marker, :name
+    attr_accessor :type, :marker, :name, :next_move_state
     
     def initialize(args = {})
       @marker = args.fetch(:marker, "")
@@ -13,27 +13,48 @@ module TicTacToe
     end
 
     def move(board)
-      state = board.grid
-      if state.flatten.all? {|s| s == nil}
+      
+      if rank_moves(board).size >= 1
+        return rank_moves(board)[0]
+      end
+      
+      if board.grid.flatten.all? {|s| s == nil}
         move = [rand(4), rand(4)]
         return move
       end
+      puts "MOVED"
       [rand(4), rand(4)]
     end
     
-    # private
-
-    def is_human?
-      true if type == :human
-    end
-
-    def is_possible_to_win?
-      # if board lines any has two self.signs and nil, move to the spot that is nil
-      
+    def next_move_state(coord, board)
+      next_move_grid = board.grid.map do |row|
+                          row.map do |spot|
+                            spot ? spot.dup : nil
+                          end
+                        end
+      next_move_state = Board.new(grid: next_move_grid)
+      next_move_state.update_at(coord, marker)
+      next_move_state
     end
     
-    def lines_to_be_completed
+    def valid_moves_and_states(board)
+      valid_move_states = {}
+      valid_moves = board.give_valid_moves
+      valid_moves.each do |coord|
+        valid_move_states[coord] = next_move_state(coord, board)
+      end
+      valid_move_states
+    end
+    
+    def rank_moves(board)
+      valid_moves = valid_moves_and_states(board)
       
+      good_moves = []
+      valid_moves.each do |move, move_state|
+        (good_moves.unshift(move)) if move_state.line_on_board? 
+        (good_moves.push(move)) if move_state.number_of_blocks(marker) > board.number_of_blocks(marker)
+      end
+      good_moves    
     end
     
   end

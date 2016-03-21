@@ -33,7 +33,32 @@ module TicTacToe
     def winning_lines
       grid + grid.transpose + diagonals
     end
-
+    
+    def line_on_board?
+      winning_lines.each do |line|
+        return true if line.uniq.size == 1 && line.compact.size == line.length
+      end
+      false
+    end
+    
+    def number_of_blocks(marker)
+      count = 0
+      winning_lines.each do |line|
+        count += 1 if line.compact.size == line.length && line.count(marker) == 1
+      end
+      count
+    end
+    
+    def give_valid_moves # in human coords
+      moves = []
+      grid.each_with_index do |row, r_index|
+        row.each_with_index do |square, c_index|
+          moves << [c_index + 1, 3 - r_index] if square.nil?
+        end
+      end
+      moves
+    end
+    
     private
 
     def board_full?
@@ -50,13 +75,6 @@ module TicTacToe
       [grid.length - spot_input[1], spot_input[0] - 1]
     end
     
-    def line_on_board?
-      winning_lines.each do |line|
-        return true if line.uniq.size == 1 && line.compact.size == line.length
-      end
-      false
-    end
-
     def diagonals
       [ [grid[0][0], grid[1][1], grid[2][2]], 
         [grid[2][0], grid[1][1], grid[0][2]] ]

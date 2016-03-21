@@ -119,11 +119,21 @@ module TicTacToe
       it 'returns valid array if move is valid' do
         board = Board.new(grid: [["X", "O", "X"], [nil, "X", nil], [nil, nil, "X"]])
         expect(board.check_valid([1,2])).to be_an Array
+      end    
+    end
+    
+    describe '#give_valid_moves' do
+      it 'returns an array containing the human coordinates of the only remaining space on a board' do
+        board = Board.new(grid: [["X", "O", "X"], ["O", "X", "O"], [nil, "X", "O"]])
+        expect(board.give_valid_moves).to eq [[1,1]]
       end
       
-      
-      
+      it 'returns an array containing multiple coordinates of remaining space on a board' do
+        board = Board.new(grid: [["X", nil, nil], ["O", "X", "O"], [nil, "X", "O"]])
+        expect(board.give_valid_moves).to eq [[2,3],[3,3],[1,1]]
+      end
     end
+    
   end
 
 end
