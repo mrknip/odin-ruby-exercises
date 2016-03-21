@@ -67,30 +67,35 @@ module TicTacToe
     
     describe '#rank_moves' do
       before :each do 
-        @board = Board.new(grid: [["X", nil, "X"], ["X", "O", "O"], ["O", nil, "X"]])
         @player = Player.new({marker: "X"})
       end
       
       it 'returns moves that would make a line' do
-        p @board.grid
-        expect(@player.rank_moves(@board)).to eq [[2,3]]
+        board = Board.new(grid: [["X", nil, "X"], ["X", "O", "O"], ["O", nil, "X"]])
+        expect(@player.rank_moves(board)).to eq [[2,3]]
       end
       
       it 'returns moves that would block a line' do
-        board3 = Board.new(grid: [[nil, nil, nil], ["O", "X", nil], ["X", nil, nil]])
-        player3 = Player.new({marker: "O"})
-        
-        expect(player3.rank_moves(board3)).to eq [[3,3]]
+        board = Board.new(grid: [[nil, nil, nil], ["X", "O", nil], ["O", nil, nil]])
+        expect(@player.rank_moves(board)).to eq [[3,3]]
       end
       
-      it 'ranks winning lines above blocking lines' do
-        p "testing"
+      it 'ranks winning lines above blocking lines consistently' do
         board = Board.new(grid: [[nil, nil, nil], ["X", nil, "X"], ["O", nil, "O"]])
         expect(@player.rank_moves(board).first).to eq [2,2]
         board2 = Board.new(grid: [[nil, nil, nil], ["O", nil, "O"], ["X", nil, "X"]])
         expect(@player.rank_moves(board2).first).to eq [2,1]
-        expect(@player.rank_moves(board2)[1]).to eq [2,2]
-        
+      end
+      
+      it 'ranks blocking lines above making a non-blocked line' do
+        board = Board.new(grid: [[nil, nil, nil], ["O", "O", nil], ["X", nil, nil]])
+        expect(@player.rank_moves(board).first).to eq [3,2]
+      end
+      
+      it 'chooses a fork over a single non-blocked line' do
+        board = Board.new(grid: [["X", "O", nil], [nil, nil, "X"], ["O", nil, nil]])
+        expect(@player.rank_moves(board).first).to eq [3,1]
+      
       end
       
     end
