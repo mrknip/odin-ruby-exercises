@@ -15,7 +15,7 @@ module TicTacToe
 
     def move(board)
       return best_move(board, marker) unless rank_moves(board, marker).empty?
-      board.give_valid_moves.sample
+      board.valid_moves.sample
     end
     
     def next_move_state(coord, board, marker)
@@ -33,7 +33,7 @@ module TicTacToe
     
     def valid_moves_and_states(board, marker)
       valid_move_states = {}
-      board.give_valid_moves.each do |coord|
+      board.valid_moves.each do |coord|
         valid_move_states[coord] = next_move_state(coord, board, marker)
       end
       valid_move_states

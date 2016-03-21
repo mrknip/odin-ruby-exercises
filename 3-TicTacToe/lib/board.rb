@@ -58,7 +58,7 @@ module TicTacToe
       count
     end
     
-    def give_valid_moves # in human coords
+    def valid_moves # in human coords
       moves = []
       grid.each_with_index do |row, r_index|
         row.each_with_index do |square, c_index|
@@ -94,9 +94,8 @@ module TicTacToe
       spots.all? {|n| (0..2).include? n }
     end
 
-    def is_empty?(input)
-      spot = arrayify(input)
-      grid[spot[0]][spot[1]].nil?
+    def is_empty?(spot)
+      valid_moves.include?(spot)
     end
   end
 end
