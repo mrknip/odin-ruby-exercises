@@ -11,6 +11,7 @@ module TicTacToe
     def update_at(coord, marker)
       grid_spot = arrayify(coord)
       grid[grid_spot[0]][grid_spot[1]] = marker
+      return self
     end
     
     def whats_at(coord)

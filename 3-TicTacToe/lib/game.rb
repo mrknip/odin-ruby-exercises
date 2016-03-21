@@ -89,6 +89,7 @@ module TicTacToe
       loop do
         display(:marker_plz)
         player.marker = gets.chomp[0]
+        players[1].other_marker = player.marker
         redo unless player.marker =~ /\S/
         player.marker == players[1].marker ? display(:marker_taken, {:player => current_player} ) : break
       end

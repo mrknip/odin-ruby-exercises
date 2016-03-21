@@ -41,7 +41,8 @@ module TicTacToe
       
       it 'changes the grid contents at standard x/y coordinates' do
         board = Board.new(grid: [["X", nil, nil], [nil, nil, nil], [nil, nil, nil]])
-        expect(board.update_at([1,3], "Bongs")).to eq "Bongs"
+        board.update_at([1,3], "Bongs")
+        expect(board.grid).to eq [["Bongs", nil, nil], [nil, nil, nil], [nil, nil, nil]]
       end
     end
     
@@ -134,6 +135,25 @@ module TicTacToe
       end
     end
     
+    describe '#number_of_nonblocks' do
+    
+      it 'returns 0 when there are no non-blocked lines on the board' do
+        board = Board.new
+        expect(board.number_of_nonblocks("@")).to eq 0
+      end
+      
+      it 'returns 1 when there is one non-blocked line on the board' do
+        board = Board.new(grid: [["@", "@", nil], [nil,nil,nil], [nil, nil, nil]])
+        expect(board.number_of_nonblocks("@")).to eq 1
+        board = Board.new(grid: [["@", "@", nil], ["X","X",nil], [nil, nil, nil]])
+        expect(board.number_of_nonblocks("@")).to eq 1
+      end
+      
+      it 'returns 2 when there are two non-blocked lines on the board' do
+        board = Board.new(grid: [["@", nil, "@"], [nil, "X", nil], ["@", nil, nil]])
+        expect(board.number_of_nonblocks("@")).to eq 2
+      end
+    end
   end
 
 end
