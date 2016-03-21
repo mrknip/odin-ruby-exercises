@@ -106,7 +106,6 @@ module TicTacToe
       
       it 'ranks forcing opponent to forgo fork over making the first non-blocking line' do
         board = Board.new(grid: [[nil, nil, "O"], [nil, "X", nil], ["O", nil, nil]])
-        puts "check"
         expect(@player.rank_moves(board, @player.marker).first).to eq [3,2]
       end
     
