@@ -36,7 +36,7 @@ module TicTacToe
     
     def line_on_board?
       winning_lines.each do |line|
-        return true if line.uniq.size == 1 && line.compact.size == line.length
+        return true if line.uniq.size == 1 && line.compact.size == line.size
       end
       false
     end
@@ -44,7 +44,15 @@ module TicTacToe
     def number_of_blocks(marker)
       count = 0
       winning_lines.each do |line|
-        count += 1 if line.compact.size == line.length && line.count(marker) == 1
+        count += 1 if line.compact.size == line.size && line.count(marker) == 1
+      end
+      count
+    end
+    
+    def number_of_nonblocks(marker)
+      count = 0
+      winning_lines.each do |line|
+        count += 1 if line.compact.size == 2 && line.count(marker) == 2
       end
       count
     end

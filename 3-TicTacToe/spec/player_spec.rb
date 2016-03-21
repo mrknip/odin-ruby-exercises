@@ -8,9 +8,6 @@ module TicTacToe
   describe Player do
   
     describe '#move' do
-    
-      it 'makes a move at random if the board is empty'
-      
       it 'wins the game when able' do
         board = Board.new(grid: [["X", nil, "X"], ["O", nil, "O"], [nil, nil, nil]])
         player = Player.new({marker: "O"})
@@ -24,6 +21,7 @@ module TicTacToe
         
         expect(player.move(board)).to eq [3,3]
       end
+      
     
     end
   
@@ -86,10 +84,13 @@ module TicTacToe
       end
       
       it 'ranks winning lines above blocking lines' do
+        p "testing"
         board = Board.new(grid: [[nil, nil, nil], ["X", nil, "X"], ["O", nil, "O"]])
-        expect(@player.rank_moves(board)).to eq [[2,2], [2,1]]
+        expect(@player.rank_moves(board).first).to eq [2,2]
         board2 = Board.new(grid: [[nil, nil, nil], ["O", nil, "O"], ["X", nil, "X"]])
-        expect(@player.rank_moves(board2)).to eq [[2,1], [2,2]]
+        expect(@player.rank_moves(board2).first).to eq [2,1]
+        expect(@player.rank_moves(board2)[1]).to eq [2,2]
+        
       end
       
     end

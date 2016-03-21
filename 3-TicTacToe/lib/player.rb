@@ -22,19 +22,22 @@ module TicTacToe
         move = [rand(4), rand(4)]
         return move
       end
-      puts "MOVED"
       [rand(4), rand(4)]
     end
     
     def next_move_state(coord, board)
-      next_move_grid = board.grid.map do |row|
-                          row.map do |spot|
-                            spot ? spot.dup : nil
-                          end
-                        end
-      next_move_state = Board.new(grid: next_move_grid)
+      next_move_state = deep_copy(board)
       next_move_state.update_at(coord, marker)
       next_move_state
+    end
+    
+    def deep_copy(board)
+      copy_grid = board.grid.map do |row|
+                    row.map do |spot|
+                      spot ? spot.dup : nil
+                    end
+                  end
+      Board.new(grid: copy_grid)
     end
     
     def valid_moves_and_states(board)
@@ -48,13 +51,16 @@ module TicTacToe
     
     def rank_moves(board)
       valid_moves = valid_moves_and_states(board)
+      good_moves = {}
       
-      good_moves = []
       valid_moves.each do |move, move_state|
-        (good_moves.unshift(move)) if move_state.line_on_board? 
-        (good_moves.push(move)) if move_state.number_of_blocks(marker) > board.number_of_blocks(marker)
+        (good_moves[move] ||= 1) if move_state.line_on_board? 
+        (good_moves[move] ||= 2) if move_state.number_of_blocks(marker) > board.number_of_blocks(marker)
+        (good_moves[move] ||= 3) if move_state.number_of_nonblocks(marker) > board.number_of_nonblocks(marker)
       end
-      good_moves    
+      
+      p good_moves
+      good_moves.sort_by {|move, score| score }.map {|p| p[0] }
     end
     
   end
