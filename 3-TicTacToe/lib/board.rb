@@ -1,119 +1,75 @@
-class Board
+module TicTacToe
 
-  attr_accessor :board
+  class Board
 
-  def initialize
-    @board = [[nil,nil,nil], [nil,nil,nil], [nil,nil,nil]]
-  end
-  
-  def update(spot, symbol)
-    board[spot[0]][spot[1]] = symbol
-  end
-  
-  def show
-    puts format_board
-  end
+    attr_accessor :grid
 
-  def has_a_line?
-    if line_in_row?
-      true
-    elsif line_in_col?
-      true
-    elsif line_in_diag?
-      true
-    else
-      false
-    end
-  end
-  
-  def is_valid?(spot)
-    if !is_on_board?(spot)
-      false
-    elsif !is_empty?(spot)
-      false
-    else
-      true
-    end
-  end
-  
-  def is_full?
-    board.all? do |row|
-      row.all? { |spot| spot != nil }
-    end
-  end
-  
-  private
-
-  def format_board
-    display = ["\n"]
-
-    board.each_with_index do |row, index|
-      display << "#{3 - index} "
-      row.each_with_index do |col, index|
-        spot = col ? col : " "
-        display << (((index + 1) % 3 == 0) ? "#{spot}\n" : "#{spot}|")
-      end
-    display << (((index + 1) % 3 == 0) ? "\n  1 2 3\n\n" : "  -----\n")
+    def initialize(args = {})
+      @grid = args.fetch(:grid, default_grid)
     end
 
-    display.join
-  end
-  
-  def check(array_of_lines)
-    array_of_lines.each do |line|
-      return true if line.uniq.size == 1 && line.compact.size == line.length
+    def update_at(coord, marker)
+      grid_spot = arrayify(coord)
+      grid[grid_spot[0]][grid_spot[1]] = marker
     end
-    false
-  end
-  
-  def line_in_row?
-    check(board)
-  end
-
-  def line_in_col?
-    check(col_arrays)
-  end
-  
-  def line_in_diag?
-    diags = [[board[0][0], board[1][1], board[2][2]], [board[2][0], board[1][1], board[0][2]]]
-    check(diags)
-  end
-  
-  # Converts the @board array of rows into an array of columns.  Cols[0] will be leftmost.
-  def col_arrays
-    cols = [[],[],[]]
     
-    board.each do |row|
-      row.each_with_index do |col_spot, index|
-        cols[index].push(col_spot)
+    def whats_at(coord)
+      grid_spot = arrayify(coord)
+      grid[grid_spot[0]][grid_spot[1]]
+    end
+    
+    def game_over
+      return :win if line_on_board?
+      return :draw if board_full?
+      false
+    end
+    
+    def check_valid(input)
+      return :off_board unless is_on_board?(input)
+      return :is_taken unless is_empty?(input)
+      arrayify(input)
+    end
+
+    def winning_lines
+      grid + grid.transpose + diagonals
+    end
+
+    private
+
+    def board_full?
+      grid.flatten.all? { |spot| spot != nil }
+    end
+    
+    def default_grid
+      [[nil,nil,nil], 
+       [nil,nil,nil], 
+       [nil,nil,nil]]
+    end
+    
+    def arrayify(spot_input)
+      [grid.length - spot_input[1], spot_input[0] - 1]
+    end
+    
+    def line_on_board?
+      winning_lines.each do |line|
+        return true if line.uniq.size == 1 && line.compact.size == line.length
       end
+      false
     end
-    cols
-  end
 
-  def is_on_board?(spot)
-    if spot.any? {|n| n < 0 || n > 2 }
-      show
-      puts "Please enter a number between 1 and 3"
-      return false
-    else
-      true
+    def diagonals
+      [ [grid[0][0], grid[1][1], grid[2][2]], 
+        [grid[2][0], grid[1][1], grid[0][2]] ]
     end
-  end
-  
-  def whatever_is_at(spot)
-    board[spot[0]][spot[1]]
-  end
-  
-  def is_empty?(spot)
-    if whatever_is_at(spot) == "X" || whatever_is_at(spot) == "O" 
-      show
-      puts "That spot's taken"
-      return false
-    else
-      true
+    
+    def is_on_board?(input)
+      spots = arrayify(input)
+      spots.all? {|n| (0..2).include? n }
     end
-  end
 
+    def is_empty?(input)
+      spot = arrayify(input)
+      grid[spot[0]][spot[1]].nil?
+    end
+  end
 end
-
