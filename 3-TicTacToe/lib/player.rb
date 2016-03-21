@@ -56,10 +56,10 @@ module TicTacToe
       valid_moves.each do |move, move_state|
         (good_moves[move] ||= 1) if move_state.line_on_board? 
         (good_moves[move] ||= 2) if move_state.number_of_blocks(marker) > board.number_of_blocks(marker)
-        (good_moves[move] ||= 3) if move_state.number_of_nonblocks(marker) > board.number_of_nonblocks(marker)
+        (good_moves[move] ||= 3) if (move_state.number_of_nonblocks(marker) - board.number_of_nonblocks(marker)) >=2
+        (good_moves[move] ||= 4) if (move_state.number_of_nonblocks(marker) - board.number_of_nonblocks(marker)) >=1
       end
       
-      p good_moves
       good_moves.sort_by {|move, score| score }.map {|p| p[0] }
     end
     
