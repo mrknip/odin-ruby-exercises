@@ -1,20 +1,41 @@
 require_relative '../lib/game'
 
-describe Hangman::Game do 
-
-  
+describe Hangman::Game do
   describe '#init' do
-    it 'selects a random word within a range and stores it' do
+    it 'selects a random word and stores it' do
       g = Hangman::Game.new
-      g.init(5,12)
+      g.init(5, 12)
       expect(g.word).to be_a String
+    end
+
+    it 'selects a word within a given range' do
+      count = 1
+      g = Hangman::Game.new
+      10.times do
+        count += 1
+        g.init(5, 12)
+        expect(g.word.size).to be >= 5
+        expect(g.word.size).to be <= 12
+      end
     end
   end
 
   describe '#player_guess' do
-    it 'validates to make sure input is an English character'
+    it 'gets a single character from player' do
+      g = Hangman::Game.new
+      allow($stdin).to receive(:gets).and_return("g\n")
+      g.player_guess
+      expect($stdin).to have_received(:gets).once
+    end
 
-    it 'compares input with the stored word'
+    it 'repeats input requests from player when guess invalid' do
+      g = Hangman::Game.new
+      allow($stdin).to receive(:gets).and_return("ARGARIG\n", "@\n", "g\n")
+
+      g.player_guess
+      expect($stdin).to have_received(:gets).exactly(3).times
+      expect(g.player_guess).to eq 'G'
+    end
   end
 
   describe '#check_guess' do
