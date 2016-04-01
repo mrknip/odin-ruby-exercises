@@ -7,8 +7,12 @@ module Hangman
 
     include FileIO
 
-    def initialize(x = 5, y = 12)
-      @word = possible_words('./data/5desk.txt', (x..y)).sample.chomp.upcase
+    def initialize(file: nil)
+      file ? load(file) : new_game
+    end
+
+    def new_game(range: (5..12))
+      @word = possible_words('./data/5desk.txt', range).sample.chomp.upcase
       @turns_left = 10
       @progress = set_progress(word)
     end

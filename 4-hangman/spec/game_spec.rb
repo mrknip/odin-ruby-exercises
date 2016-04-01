@@ -1,24 +1,33 @@
 require_relative '../lib/game'
 
 describe Hangman::Game do
-  it 'selects a random word and stores it' do
-    g = Hangman::Game.new
-    expect(g.word).to be_a String
+  
+  # nb Test relies on test.hgm in ./data
+  it 'loads a file when initialised with a file parameter' do
+    g = Hangman::Game.new(file: 'test')
+    expect(g.word).to eq 'CORRECTABLE'
   end
 
-  it 'selects a word within a given range' do
-    count = 1
-    g = Hangman::Game.new
-    10.times do
-      count += 1
-      expect(g.word.size).to be >= 5
-      expect(g.word.size).to be <= 12
+  describe '#new_game' do
+    it 'selects a random word and stores it' do
+      g = Hangman::Game.new
+      expect(g.word).to be_a String
     end
-  end
 
-  it 'sets up a progress line of the same length' do
-    g = Hangman::Game.new
-    expect(g.word.length).to eq g.progress.length
+    it 'selects a word within a given range' do
+      count = 1
+      10.times do
+        g = Hangman::Game.new
+        count += 1
+        expect(g.word.size).to be >= 5
+        expect(g.word.size).to be <= 12
+      end
+    end
+
+    it 'sets up a progress line of the same length' do
+      g = Hangman::Game.new    
+      expect(g.word.length).to eq g.progress.length
+    end
   end
 
   describe '#player_guess' do
@@ -42,6 +51,7 @@ describe Hangman::Game do
   describe '#check_guess' do
     it 'returns the same progress bar when no letters match' do
       g = Hangman::Game.new      
+
       g.instance_variable_set(:@word, 'BADGER')
       g.instance_variable_set(:@progress, Array.new(6))
 
@@ -49,8 +59,8 @@ describe Hangman::Game do
     end
 
     it 'lowers the turns left counter when no letters match' do
-          g = Hangman::Game.new
-      
+      g = Hangman::Game.new
+
       g.instance_variable_set(:@word, 'BADGER')
       g.instance_variable_set(:@progress, Array.new(6))
       g.check_guess 'Z'
