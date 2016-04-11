@@ -17,13 +17,8 @@ module Hangman
       end
     end
 
-    def shout
-      puts "aaaaa"
-    end
-
     def save(name)
       @path = "./data"
-
       File.open("#{@path}/#{name}.hgm", 'w+') do |file|
         File.write(file, self.jsonify_vars)
       end

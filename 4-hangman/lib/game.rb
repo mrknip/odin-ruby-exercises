@@ -1,4 +1,5 @@
 require_relative 'fileio'
+require_relative 'ui'
 
 module Hangman
   class Game
@@ -7,22 +8,13 @@ module Hangman
 
     include FileIO
 
-    def initialize(file: nil)
-      file ? load(file) : new_game
+    def initialize
     end
 
     def new_game(range: (5..12))
       @word = possible_words('./data/5desk.txt', range).sample.chomp.upcase
       @turns_left = 10
       @progress = set_progress(word)
-    end
-
-    def player_guess
-      loop do
-        guess = $stdin.gets.chomp
-        redo if guess =~ /\W/ || guess.size > 1
-        return guess.upcase
-      end
     end
 
     def check_guess(letter)

@@ -3,14 +3,17 @@ require_relative '../lib/game'
 describe Hangman::Game do
   
   # nb Test relies on test.hgm in ./data
-  it 'loads a file when initialised with a file parameter' do
+  it 'loads a file when load choice selected' do
     g = Hangman::Game.new(file: 'test')
+    allow(Ui).to receive(game_choice).and_return("l\n")
+    allow(Ui).to receive(load_select).and_return("test\n")
     expect(g.word).to eq 'CORRECTABLE'
   end
 
   describe '#new_game' do
     it 'selects a random word and stores it' do
       g = Hangman::Game.new
+      allow(Ui).to receive(load_select).and_return("test\n")
       expect(g.word).to be_a String
     end
 
@@ -27,24 +30,6 @@ describe Hangman::Game do
     it 'sets up a progress line of the same length' do
       g = Hangman::Game.new    
       expect(g.word.length).to eq g.progress.length
-    end
-  end
-
-  describe '#player_guess' do
-    it 'gets a single character from player' do
-      g = Hangman::Game.new
-      allow($stdin).to receive(:gets).and_return("g\n")
-      g.player_guess
-      expect($stdin).to have_received(:gets).once
-    end
-
-    it 'repeats input requests from player when guess invalid' do
-      g = Hangman::Game.new
-      allow($stdin).to receive(:gets).and_return("ARGARIG\n", "@\n", "g\n")
-
-      g.player_guess
-      expect($stdin).to have_received(:gets).exactly(3).times
-      expect(g.player_guess).to eq 'G'
     end
   end
 
