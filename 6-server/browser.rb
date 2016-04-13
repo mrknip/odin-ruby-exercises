@@ -11,8 +11,7 @@ class Browser
   end
 
   def run
-    puts "Welcome to hi-tech browser land"
-    print "Do you want to [F]IND or [R]EGISTER a knip? "
+    print "Do you want to [F]IND or [R]EGISTER? "
     input = gets.chomp
 
     case input
@@ -21,7 +20,7 @@ class Browser
     end
   end
 
-  def send(request)
+  def response_to(request)
     socket = TCPSocket.open(hostname, port)
     socket.print(request)
     response = socket.read
@@ -33,10 +32,7 @@ class Browser
     path = '/index.html'
     request = "GET #{path} #{http_ver}\r\n\r\n"
 
-    response = send(request)
-    puts response
-
-    headers, body = response.split("\r\n\r\n", 2)
+    puts response_to(request)
   end
 
   def post_request
@@ -57,7 +53,7 @@ class Browser
     headers.each { |header, value| request << "#{header}: #{value}\r\n"}
     request << "\r\n#{data}"
 
-    response = send(request)
+    response = response_to(request)
     puts response
   end
 end
