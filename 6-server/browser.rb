@@ -48,7 +48,7 @@ class Browser
     options[:email] = gets.chomp
     data = {knip: options}.to_json
 
-    path = 'knip/processor'
+    path = '/thanks.html'
     
     headers = {}
     headers['Content-type'] = 'application/json'
