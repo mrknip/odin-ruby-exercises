@@ -37,12 +37,12 @@ class Browser
 
   def post_request
     puts "You are registering a Knip"
-    options = {}
+    params = {}
     print "Please enter a name: "
-    options[:name] = gets.chomp
+    params[:name] = gets.chomp
     print "Please enter an email address: "
-    options[:email] = gets.chomp
-    data = {knip: options}.to_json
+    params[:email] = gets.chomp
+    data = {knip: params}.to_json
 
     path = '/thanks.html'
     

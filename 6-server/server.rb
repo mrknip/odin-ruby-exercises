@@ -9,7 +9,6 @@ class Server
   # TODO: look into how to set base path dynamically
   def initialize(port = 2000)
     @server = TCPServer.open(port)
-    @client = ""
     @base = "C:/users/Drew/documents/coding/ruby/odin/odin-exercises/6-server"
 
     @resp_headers = {}
@@ -17,8 +16,6 @@ class Server
   end
  
   # MAIN SERVER LOOP
-  #
-  # TODO: separate processes for individual http methods
   def run
     puts "SERVER INITIALISED"
     loop do
@@ -37,10 +34,9 @@ class Server
       puts "Request received: #{Time.now}: #{req_headers.first}"
 
       # Find the appropriate response
-      if method == "GET"  
-        process_get(path, version)
-      elsif method == "POST"
-        process_post(path, version, params)
+      case method
+      when "GET" then process_get(path, version)
+      when "POST" then process_post(path, version, params)
       end
 
       flush
@@ -49,13 +45,40 @@ class Server
   end
 
   private
+
+
+  # Request parsing methods
+  def parse_headers(client)
+    req_headers = []
+    body = []
+    while line = client.gets
+      break if line == "\r\n"
+      req_headers << line
+    end
+    req_headers
+  end
+
+  def parse_first_line(req_headers)
+    req_headers.first.split
+  end
+
+  def parse_header_data(req_headers)
+    req_header_hsh = {}
+    req_headers[1..-1].each do |req_header|
+      type, value = req_header.split(": ")
+      req_header_hsh[type] = value.strip
+    end
+    req_header_hsh
+  end
+  
+  # Response building methods
   def response(version, code, reason)
     construct_resp_headers
 
     output = "#{version} #{code} #{reason}\r\n"
-    resp_headers.each { |header, value| output << "#{header}: #{value}\r\n"}
+    @resp_headers.each { |header, value| output << "#{header}: #{value}\r\n"}
     output << "\r\n"
-    output << resp_body
+    output << @resp_body
   end
 
   def construct_resp_headers
@@ -70,6 +93,7 @@ class Server
     end
   end
 
+  # Request processing methods
   def process_get(path, version)
     path = "#{@base}#{path}"
         
@@ -104,39 +128,10 @@ class Server
     @client.print response(version, code, reason)
   end
 
+  # Clears the response variables between requests
   def flush
-    puts "Repsonse cleared"
     @resp_body = ""
     @resp_headers = {}
-  end
-
-  # Request handling methods
-  #
-  # These would sit better in a request object.  That would also help for
-  # rendering the storing of information consistently - currently there are
-  # variables and a hash. Making these attributes of an object would improve
-  # flexibility and readability.
-  def parse_headers(client)
-    req_headers = []
-    body = []
-    while line = client.gets
-      break if line == "\r\n"
-      req_headers << line
-    end
-    req_headers
-  end
-
-  def parse_first_line(req_headers)
-    req_headers.first.split
-  end
-
-  def parse_header_data(req_headers)
-    req_header_hsh = {}
-    req_headers[1..-1].each do |req_header|
-      type, value = req_header.split(": ")
-      req_header_hsh[type] = value.strip
-    end
-    req_header_hsh
   end
 end
 
