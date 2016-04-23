@@ -15,18 +15,11 @@ module BinaryTree
   end
 
   def self.insert(value, node)
-    if node.nil?
-      node = Node.new(value) 
-      return
-    end
-    
     case value <=> node.value
     when -1
-      return (node.left = Node.new(value)) unless node.left 
-      insert(value, node.left)
+      node.left ? insert(value, node.left) : node.left = Node.new(value)
     when 1
-      return (node.right = Node.new(value)) unless node.right
-      insert(value, node.right)
+      node.right ? insert(value, node.right) : node.right = Node.new(value)
     end
   end
 end

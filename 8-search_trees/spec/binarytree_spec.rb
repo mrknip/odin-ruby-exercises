@@ -19,7 +19,7 @@ describe BinaryTree do
       end
     end
     
-    context 'with a sorted array and no balancing' do
+    context 'with a sorted array' do
       subject { BinaryTree.build_tree([4,6,9]) }
       
       it 'returns a tree with the first value as the root' do
@@ -41,7 +41,23 @@ describe BinaryTree do
       end
     end
 
+   context 'with an unsorted array' do
+      subject { BinaryTree.build_tree([4,9,6, 2]) }
+      
+      it 'returns a tree with the first value as the root' do
+        expect(subject).to be_a BinaryTree::Node
+        expect(subject.value).to eq 4
+      end
 
+      it 'places higher values on the right' do
+        expect(subject.right.value).to eq 9 
+      end
+
+      it 'places lower values on the left' do
+        expect(subject.left.value).to eq 2
+        expect(subject.right.left.value).to eq 6
+      end
+    end
   end
   
 end
