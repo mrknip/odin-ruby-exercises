@@ -27,8 +27,9 @@ describe Pathfinder do
     end
 
     context 'when given a move off the board' do
-
-      it 'raises an error'
+      it 'raises an error' do
+        expect { Pathfinder.knight_moves([1,1], [8, 3]) }.to raise_error "Invalid coordinates"
+      end
     end
   end
 end

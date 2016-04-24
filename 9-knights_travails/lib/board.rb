@@ -19,4 +19,9 @@ class Board
   def size
     @width**2
   end
+
+  def self.valid?(position)
+    return true if position.all? { |n| n.between?(0, 7) }
+    false
+  end
 end

@@ -7,6 +7,8 @@ class Pathfinder
   class << self
 
     def knight_moves(position, target)
+      raise ArgumentError, "Invalid coordinates" unless Board.valid? target
+
       queue = [PathNode.new(position, nil)]
       
       until queue.empty?      
