@@ -17,11 +17,12 @@ describe Board do
 
   describe '#[]=' do
     before do
-      let(:board) { subject[1,1] = "ROOK" }
+      @board = Board.new
+      @board[1,1] = "ROOK"
     end
 
     it "sets a square's contents" do
-      expect(board[1,1]).to eq "ROOK"
+      expect(@board[1, 1]).to eq "ROOK"
     end
   end
 end
