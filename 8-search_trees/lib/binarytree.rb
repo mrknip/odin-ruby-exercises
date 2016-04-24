@@ -58,23 +58,34 @@ module BinaryTree
     def dfs(target, stack = [root])
       return -1 if stack.empty?
       
-      node = stack.shift
+      node = stack.first
       return node if node.value == target
-      # node.visited = true
+      node.visited = true
 
-      stack.unshift(node.left) if node.left # && node.left.visited == false
-      stack.unshift(node.right) if node.right # && node.right.visited == false  
-      
-      dfs(target, stack)  
+      if node.left && !node.left.visited
+        stack.unshift(node.left) 
+      elsif node.right && !node.right.visited
+        stack.unshift(node.right)
+      else
+        stack.shift  
+      end
+
+      dfs(target, stack)
     end
 
     def dfs_iterative(target, stack = [root])
       until stack.empty?
         node = stack.shift
         return node if node.value == target
-        
-        stack.unshift(node.left) if node.left && node.left.visited == false
-        stack.unshift(node.right) if node.right && node.right.visited == false
+        node.visited = true
+
+        if node.left && !node.left.visited
+          stack.unshift(node.left) 
+        elsif node.right && !node.right.visited
+          stack.unshift(node.right)
+        else
+          stack.shift  
+        end
       end
       -1
     end
