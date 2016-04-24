@@ -62,10 +62,11 @@ describe BinaryTree do
   
   describe '.bfs' do
     
+    subject { BinaryTree.bfs(target, tree) }
+
     let(:tree) { BinaryTree.build_tree [3,2,5,9,5] }
 
-    context 'when the target is not in the array' do
-      
+    context 'when the target is not in the array' do      
       let(:target) { 34 }
 
       it 'returns -1' do
@@ -74,14 +75,15 @@ describe BinaryTree do
     end
 
     context 'when the target is in the array' do
-      
       let(:target) { 5 }
 
       it 'returns a node' do
-        expect(BinaryTree.bfs(target, tree)).to be_a BinaryTree::Node
+        expect(subject).to be_a BinaryTree::Node
       end
 
-      it 'returns a node with the target value'
+      it 'returns a node with the target value' do
+        expect(subject.value).to eq 5
+      end      
     end
   end
 end
