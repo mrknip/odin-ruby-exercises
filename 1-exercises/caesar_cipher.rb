@@ -4,7 +4,7 @@ def caesar_cipher(string, key)
   characters.each_with_index do |char, index|
     ascii_value = char.ord
 
-    next if !(char =~ /[A-Za-z]/)
+    next unless char =~ /[A-Za-z]/
 
     key.abs.times do
       if key > 0
@@ -18,7 +18,7 @@ def caesar_cipher(string, key)
 
     characters[index] = ascii_value.chr
   end
-  return characters.join("")
+  characters.join("")
 end
 
 # p 

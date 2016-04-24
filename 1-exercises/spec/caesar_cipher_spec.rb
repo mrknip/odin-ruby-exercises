@@ -1,9 +1,13 @@
 require_relative 'spec_helper'
 
-describe '#caesar_cipher' do 
+describe '#caesar_cipher' do
   it 'shifts a character along the alphabet n times' do
     expect(caesar_cipher('a', 2)).to eq 'c'
     expect(caesar_cipher('a', 3)).to eq 'd'
+  end
+
+  it 'returns the same string with key 0' do
+    expect(caesar_cipher('a', 0)).to eq 'a'
   end
 
   it 'loops at the end of the alphabet' do
