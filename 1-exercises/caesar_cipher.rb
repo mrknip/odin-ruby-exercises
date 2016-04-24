@@ -21,7 +21,7 @@ def caesar_cipher(string, key)
   return characters.join("")
 end
 
-p caesar_cipher("What a string!", 5)
-p caesar_cipher("Bmfy f xywnsl!", -5)
-p caesar_cipher("What a string!", 349587)
-p caesar_cipher("Nyrk r jkizex!", -349587)
+# p 
+# p caesar_cipher(, -5)
+# p caesar_cipher("What a string!", 349587)
+# p caesar_cipher("Nyrk r jkizex!", -349587)
