@@ -6,11 +6,5 @@ module BinaryTree
       @value = value
       @visited = false
     end
-
-    def pp
-
-      "          Node value: #{value}\n
-      Left: #{left.value if left} || Right #{right.value if right}"
-    end
   end
 end
