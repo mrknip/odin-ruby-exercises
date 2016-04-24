@@ -14,6 +14,25 @@ class Grid
   end
 
   def has_a_line?
-    
+    return true if linear_check(columns)
+    false
+  end
+
+  def linear_check(grid)
+    value = ""
+    grid.each do |line|
+      count = 0
+      line.each do |spot|
+        next unless spot
+        if count == 0 || spot == value
+          count += 1
+        else
+          count = 1
+        end
+        return true if count == 4
+        value = spot
+      end
+    end
+    return false
   end
 end

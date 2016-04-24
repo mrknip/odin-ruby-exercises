@@ -28,8 +28,21 @@ describe Grid do
   end
 
   describe '#has_a_line?' do
-    it 'returns true when there are four in a column'
+    it 'returns true when there are four in a column' do
+      4.times { subject.place_counter(3, "X") }
+      expect(subject.has_a_line?).to be true
+    end
 
+    it 'returns false when there are not four in a column' do
+      3.times { subject.place_counter(3, "X") }
+      3.times { subject.place_counter(3, "O") }
+      expect(subject.has_a_line?).to be false
+    end
+
+    it 'returns true when there are four in a row' do
+
+    end
+    
     # context 'with four counters in a row' do
     #   subject do
     #     grid = Grid.new
