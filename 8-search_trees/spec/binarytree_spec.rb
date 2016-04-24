@@ -42,7 +42,7 @@ describe BinaryTree do
     end
 
    context 'with an unsorted array' do
-      subject { BinaryTree.build_tree([4,9,6, 2]) }
+      subject { BinaryTree.build_tree([4,9,6,2]) }
       
       it 'returns a tree with the first value as the root' do
         expect(subject).to be_a BinaryTree::Node
@@ -60,4 +60,28 @@ describe BinaryTree do
     end
   end
   
+  describe '.bfs' do
+    
+    let(:tree) { BinaryTree.build_tree [3,2,5,9,5] }
+
+    context 'when the target is not in the array' do
+      
+      let(:target) { 34 }
+
+      it 'returns -1' do
+        expect(BinaryTree.bfs(target, tree)).to eq -1
+      end
+    end
+
+    context 'when the target is in the array' do
+      
+      let(:target) { 5 }
+
+      it 'returns a node' do
+        expect(BinaryTree.bfs(target, tree)).to be_a BinaryTree::Node
+      end
+
+      it 'returns a node with the target value'
+    end
+  end
 end
