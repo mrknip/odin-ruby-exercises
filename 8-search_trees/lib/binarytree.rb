@@ -3,53 +3,80 @@ require_relative 'node'
 #
 #
 module BinaryTree  
-  def self.build_tree(ary)
+  class Tree
+    attr_reader :root
     
-    @tree = Node.new(ary[0])
-
-    ary[1..-1].each do |value|
-      insert(value, @tree)
+    def initialize(ary)
+      build_tree(ary)
     end
 
-    @tree
-  end
+    def build_tree(ary)
+      @root = Node.new(ary[0])
 
-  def self.insert(value, node)
-    case value <=> node.value
-    when -1
-      node.left ? insert(value, node.left) : node.left = Node.new(value)
-    when 1
-      node.right ? insert(value, node.right) : node.right = Node.new(value)
+      ary[1..-1].each do |value|
+        insert(value, @root)
+      end
     end
-  end
 
-  def self.bfs(target, node = @tree, queue = [node])
-    # Starting at the root node - fed in through params
-    return -1 if queue.empty?
-    
-    puts "Visiting: #{queue[0].value}"
-    
-    # Take node out of the queue
-    queue.shift
-    
-    # Check if we've found it
-    return node if node.value == target
+    def insert(value, node)
+      case value <=> node.value
+      when -1
+        node.left ? insert(value, node.left) : node.left = Node.new(value)
+      when 1
+        node.right ? insert(value, node.right) : node.right = Node.new(value)
+      end
+    end
 
-    # Mark the node as visited
-    node.visited = true
-    
-    # Add children to the queue, if there are any
-    if node.left && node.left.visited == false
-      queue << node.left 
-      puts "Adding left: #{node.left.value}"
-    end
-    if node.right && node.right.visited == false
-      queue << node.right
-      puts "Adding right: #{node.right.value}"
-    end
+    # NB: It is not necessary to mark nodes as visited for a binary search
+    # as each node has one parent only. Code 
+    def bfs(target, queue = [root])
+      return -1 if queue.empty?
+
+      node = queue.shift
+      return node if node.value == target
+      # node.visited = true
       
-    # Do the next in the queue
-    bfs(target, queue[0], queue)
-  end
+      queue << node.left if node.left # && node.left.visited == false
+      queue << node.right if node.right # && node.right.visited == false
+      
+      bfs(target, queue)
+    end
+
+    def bfs_iterative(target, queue = [root])
+      until queue.empty?
+        node = queue.shift
+        return node if node.value == target
+        # node.visited = true
   
+        queue << node.left if node.left # && node.left.visited == false
+        queue << node.right if node.right # && node.right.visited == false
+      end
+
+      return -1
+    end
+
+    def dfs(target, stack = [root])
+      return -1 if stack.empty?
+      
+      node = stack.shift
+      return node if node.value == target
+      # node.visited = true
+
+      stack.unshift(node.left) if node.left # && node.left.visited == false
+      stack.unshift(node.right) if node.right # && node.right.visited == false  
+      
+      dfs(target, stack)  
+    end
+
+    def dfs_iterative(target, stack = [root])
+      until stack.empty?
+        node = stack.shift
+        return node if node.value == target
+        
+        stack.unshift(node.left) if node.left && node.left.visited == false
+        stack.unshift(node.right) if node.right && node.right.visited == false
+      end
+      -1
+    end
+  end
 end
