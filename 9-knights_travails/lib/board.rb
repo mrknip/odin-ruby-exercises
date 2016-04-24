@@ -3,27 +3,20 @@ class Board
 
   def initialize(width = 8)
     @width = width
-    @squares = Array.new(width ** 2) { Square.new }
+    @squares = Array.new(width) { Array.new(width) { Square.new } }
   end
 
   def [](x, y)
-    raise ArgumentError, "Invalid coordinates" unless (0..64).include? onedim(x,y)
-    @squares[onedim(x,y)].contents
+    raise ArgumentError, "Invalid coordinates" unless @squares[@width-y][x]
+    @squares[@width-y][x].contents
   end
 
   def []=(x, y, content)
-    @squares[onedim(x,y)].contents = content
-  end
-
-  def onedim(x,y)
-    (8 * y) + x
-  end
-
-  def to_twodim(p)
-    [p % @width, p / @width]
+    raise ArgumentError, "Invalid coordinates" unless @squares[@width-y][x]
+    @squares[@width-y][x].contents = content
   end
 
   def size
-    @squares.size
+    @width ** 2
   end
 end

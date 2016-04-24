@@ -24,5 +24,13 @@ describe Board do
     it "sets a square's contents" do
       expect(@board[1, 1]).to eq "ROOK"
     end
+
+    it 'overwrites existing contents' do
+      expect(@board[1,1] = "NOT-ROOK").to eq "NOT-ROOK"
+    end
+
+    it "raises an error for non-existent squares" do
+      expect{ @board[9,9] = "Niceone" }.to raise_error ArgumentError
+    end
   end
 end
