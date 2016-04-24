@@ -1,4 +1,4 @@
-## Knights Travails
+## Knight's Travails
 
 Exercise to build a pathfinder function for a chess knight. Link to Odin Project is [here](http://www.theodinproject.com/ruby-programming/data-structures-and-algorithms?ref=lnav)
 
