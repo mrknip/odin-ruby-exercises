@@ -7,16 +7,16 @@ class Board
   end
 
   def [](x, y)
-    raise ArgumentError, "Invalid coordinates" unless @squares[@width-y][x]
-    @squares[@width-y][x].contents
+    raise ArgumentError, 'Invalid coordinates' unless @squares[@width - y][x]
+    @squares[@width - y][x].contents
   end
 
   def []=(x, y, content)
-    raise ArgumentError, "Invalid coordinates" unless @squares[@width-y][x]
-    @squares[@width-y][x].contents = content
+    raise ArgumentError, 'Invalid coordinates' unless @squares[@width - y][x]
+    @squares[@width - y][x].contents = content
   end
 
   def size
-    @width ** 2
+    @width**2
   end
 end
