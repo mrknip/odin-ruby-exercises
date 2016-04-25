@@ -13,8 +13,12 @@ class Grid
     @columns[column][spot] = counter
   end
 
-  def on_grid?(spot)
-    return false unless spot.first.between?(0, 6) || spot.last.between?(0, 5)
+  def [](col, row)
+    @columns[col][row]
+  end
+
+  def on_grid?(position)
+    return false unless position.first.between?(0, 6) || position.last.between?(0, 5)
     true
   end
 
@@ -42,10 +46,18 @@ class Grid
     return false
   end
 
-  def linear_spot_check?(spot)
-    stack = []
+  def linear_spot_check?(position)
+    spotnode = { position: position, value: grid[position], neighbours: [], depth: 1 }
+    stack = [spotnode]
 
-    spotnode = {position: spot, neighbours: [], depth: 1}
+    until stack.empty?
+      cur_spot = stack.first
+      spots_adjacent_to(cur_spot[:position]).each do |neighbour|
+        if neighbour
+        stack.unshift({position: neighbour, neighbours: [], depth: 2})
+        end
+      end
+    end
   end
 
   def neighbours

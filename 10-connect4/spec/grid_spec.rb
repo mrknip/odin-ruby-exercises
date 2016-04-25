@@ -6,6 +6,13 @@ describe Grid do
     expect(subject.columns[0].size).to eq 6
   end
 
+  describe '#[]' do
+    it 'returns the spot at a point on the grid' do
+      subject.place_counter(3, 'test')
+      expect(subject[3,0]).to eq 'test'
+    end
+  end
+  
   describe '#place_counter' do
     it 'puts a counter at the bottom of an empty column' do
       subject.place_counter(3, "X")
@@ -26,6 +33,7 @@ describe Grid do
       expect { subject.place_counter(3, "X") }.to raise_error "Column full"
     end
   end
+
 
   describe 'on_grid?' do 
     it 'returns true for an empty spot' do
