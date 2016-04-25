@@ -10,6 +10,7 @@ class Grid
     raise "Column full" unless @columns[column].include? nil
     
     spot = @columns[column].index(nil)
+    @last_move = [column, spot]
     @columns[column][spot] = counter
   end
 
@@ -18,58 +19,50 @@ class Grid
   end
 
   def on_grid?(position)
-    return false unless position.first.between?(0, 6) || position.last.between?(0, 5)
+    return false unless position.first.between?(0, 6) && position.last.between?(0, 5)
     true
   end
 
   def has_a_line?
-    return true if linear_check?(columns)
-    return true if linear_check?(rows)
+    return true if full_line_check?(@last_move)
     false
   end
 
-  def linear_check?(grid) 
-    value = ""
-    grid.each do |line|
-      count = 0
-      line.each do |spot|
-        next unless spot
-        if count == 0 || spot == value
-          count += 1
-        else
-          count = 1
-        end
-        return true if count == 4
-        value = spot
-      end
+  def full_line_check?(position)
+    directions.each do |direction|
+      return true if line_in_direction?(position, direction)
     end
-    return false
+    false
   end
 
-  def linear_spot_check?(position)
-    spotnode = { position: position, value: grid[position], neighbours: [], depth: 1 }
-    stack = [spotnode]
+  def line_in_direction?(position, direction, length = 1)
+    value = @columns[position.first][position.last]
 
-    until stack.empty?
-      cur_spot = stack.first
-      spots_adjacent_to(cur_spot[:position]).each do |neighbour|
-        if neighbour
-        stack.unshift({position: neighbour, neighbours: [], depth: 2})
-        end
-      end
+    adj_position = position.zip(direction).map { |s,n| s + n }
+    adj_value = @columns[adj_position.first][adj_position.last]
+
+    return false unless on_grid? adj_position
+    
+    while adj_value == value
+        length += 1
+        return true if length == 4
+
+        adj_position = adj_position.zip(direction).map { |s,n| s + n }
+        adj_value = @columns[adj_position.first][adj_position.last]
     end
+    false
   end
 
-  def neighbours
+  def directions
     [[-1, 1], [0, 1], [1, 1],
      [-1, 0],         [1, 0],
      [-1,-1], [0,-1], [1,-1]]
   end
 
   def spots_adjacent_to(spot)
-    spots = neighbours.map do |neighbour|
+    spots = directions.map do |neighbour|
               spot.zip(neighbour).map { |s,n| s + n }
-            end.select { |spot| spot.valid? }
+            end.select { |spot| on_grid? spot }
   end
 
   def rows

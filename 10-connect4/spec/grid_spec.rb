@@ -92,15 +92,5 @@ describe Grid do
 
       expect(subject).to have_a_line
     end
-
-    # context 'with four counters in a row' do
-    #   subject do
-    #     grid = Grid.new
-    #     (0..3).each {|n| grid.place_counter(n, 'X')}
-    #     grid
-    #   end
-
-    #   it { is_expected.to have_a_line }
-    # end
   end
 end
