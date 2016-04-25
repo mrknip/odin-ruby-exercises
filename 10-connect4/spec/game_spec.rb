@@ -32,55 +32,66 @@ describe Game do
   describe '#play' do
     let(:grid) { subject.grid }
     let(:player1) { subject.player1 }
+    let(:player2) { subject.player2 }
+
+    before(:example) do
+      allow($stdin).to receive(:gets) { 2 }
+      allow(grid).to receive(:has_a_line?) { true }
+    end
 
     it 'takes input' do
-      allow($stdin).to receive(:gets) { 2 }
       expect($stdin).to receive(:gets)
       subject.play
     end
 
     it 'updates the grid with an array' do
-      allow($stdin).to receive(:gets) { 2 }
-      allow(grid).to receive(:has_a_line?) { true }
       expect(grid).to receive(:place_counter).with(2, player1)
       subject.play
     end
 
     it 'checks for a win' do
-      allow($stdin).to receive(:gets) { 2 }
-      allow(grid).to receive(:has_a_line?) { true }
-
       expect(grid).to receive(:has_a_line?)
       subject.play
     end
 
     context 'when player wins' do
       it 'updates the screen' do
-        allow($stdin).to receive(:gets) { 2 }
-        allow(grid).to receive(:has_a_line?) { true }
-
         expect(subject).to receive(:render).with(:win)
         subject.play
       end
 
-      it 'exits the game'
+      it 'exits the game' do
+        expect(subject).to receive(:render).with(:win)
+        subject.play
+      end
     end
 
     context 'when no win' do
-      it 'updates the screen' do
+      before(:example) do
         allow($stdin).to receive(:gets) { 2 }
         allow(grid).to receive(:has_a_line?).and_return(false, true)
+        allow(grid).to receive(:place_counter).and_return(true)        
+      end
 
-        expect(subject).to receive(:render).twice
+      it 'updates the screen' do  
+        expect(subject).to receive(:render).once.with(:ongoing)
+        expect(subject).to receive(:render).once.with(:win)
+        
         subject.play
       end
 
-      it 'switches players' do
-        allow($stdin).to receive(:gets) { 2 }
-        allow(grid).to receive(:has_a_line?).and_return(false, true)
+      it 'switches players' do        
+        expect(subject).to receive(:update).once.with(2, player1)
+        expect(subject).to receive(:update).once.with(2, player2)
 
-        expect(subject).to receive(:render).once.with(:ongoing)
-        expect(subject).to receive(:render).once.with(:win)
+        subject.play
+      end
+
+      it 'updates move between turns' do
+        allow($stdin).to receive(:gets).and_return(2, 3)
+        expect(subject).to receive(:update).once.with(2, player1)
+        expect(subject).to receive(:update).once.with(3, player2)
+
         subject.play
       end
 

@@ -20,9 +20,20 @@ class Game
   def play
     while @vars[:state] == :ongoing
       player_input
+
       update(@vars[:move], @vars[:current_player])
+      check(@vars[:move])
+      
       render(@vars[:state])
+
+      if @vars[:current_player] == @player1
+        @vars[:current_player] = @player2
+      else
+        @vars[:current_player] = @player1
+      end
+       
     end
+    game_over
   end
 
   def player_input
@@ -31,11 +42,16 @@ class Game
 
   def update(move, player)
     grid.place_counter(move, player)
-    @vars[:state] = :win if grid.has_a_line?
+  end
+
+  def check(move)
+    @vars[:state] = :win if grid.has_a_line?(move)
     # @vars[:state] = :draw if grid.full?
   end
 
   def render(gamestate)
-    
+  end
+
+  def game_over
   end
 end
