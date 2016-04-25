@@ -14,11 +14,12 @@ class Grid
   end
 
   def has_a_line?
-    return true if linear_check(columns)
+    return true if linear_check?(columns)
+    return true if linear_check?(rows)
     false
   end
 
-  def linear_check(grid)
+  def linear_check?(grid)
     value = ""
     grid.each do |line|
       count = 0
@@ -34,5 +35,9 @@ class Grid
       end
     end
     return false
+  end
+
+  def rows
+    columns.transpose
   end
 end

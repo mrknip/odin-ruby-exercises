@@ -40,9 +40,16 @@ describe Grid do
     end
 
     it 'returns true when there are four in a row' do
-
+      (0..3).each {|n| subject.place_counter(n, 'X')}
+      expect(subject.has_a_line?).to be true
     end
-    
+
+    it 'returns false when there are not four in a row' do
+      (0..2).each {|n| subject.place_counter(n, 'X')}
+      (3..5).each {|n| subject.place_counter(n, 'O')}
+      expect(subject.has_a_line?).to be false
+    end
+
     # context 'with four counters in a row' do
     #   subject do
     #     grid = Grid.new
