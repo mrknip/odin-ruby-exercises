@@ -6,10 +6,10 @@ describe Grid do
     expect(subject.columns[0].size).to eq 6
   end
 
-  describe '#[]' do
+  describe '#value' do
     it 'returns the spot at a point on the grid' do
       subject.place_counter(3, 'test')
-      expect(subject[3,0]).to eq 'test'
+      expect(subject.value [3,0]).to eq 'test'
     end
   end
   
