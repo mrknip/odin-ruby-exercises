@@ -1,13 +1,13 @@
 class Grid
   attr_reader :columns
 
-  def initialize
-    @columns = Array.new(7) { Array.new(6) }
+  def initialize(columns = 7, rows = 6)
+    @columns = Array.new(columns) { Array.new(rows) }
   end
 
   def place_counter(column, counter)
-    raise "Invalid move" unless @columns[column]
-    raise "Column full" unless @columns[column].include? nil
+    raise "Invalid move" unless columns[column]
+    raise "Column full" unless columns[column].include? nil
     
     spot = columns[column].index(nil)
     @last_move = [column, spot]
@@ -17,7 +17,6 @@ class Grid
   def value(position)
     @columns[position.first][position.last]
   end
-
 
   def on_grid?(position)
     return false unless position.first.between?(0, 6) && position.last.between?(0, 5)
