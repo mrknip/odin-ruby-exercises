@@ -23,6 +23,11 @@ class Grid
     true
   end
 
+  def full?
+    return true unless columns.flatten.include? nil
+    false
+  end
+
   def has_a_line?
     return true if line_in_any_direction? @last_move
     

@@ -49,6 +49,26 @@ describe Grid do
     end
   end
 
+  describe '#full?' do
+    subject { Grid.new(2,1) }
+      
+    before do
+      subject.place_counter(0, 'X')
+    end
+
+    it 'returns false when the grid is not full' do
+      p subject
+      expect(subject.full?).to be false
+    end
+
+    it 'returns true when the grid is full' do
+      subject.place_counter(1, 'O')
+
+      expect(subject.full?).to be true
+    end
+
+  end
+
   describe '#has_a_line?' do
     it 'returns true when there are four in a column' do
       4.times { subject.place_counter(3, "X") }
