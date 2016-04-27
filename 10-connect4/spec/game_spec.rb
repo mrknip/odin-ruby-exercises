@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe Game do
+  let(:grid) { subject.grid }
+  
   context 'when initialised without parameters' do
-    let(:grid) { subject.grid }
     
     it 'has a 7x6 grid' do
       expect(grid.columns.size).to eq 7
@@ -36,6 +37,7 @@ describe Game do
 
     before(:example) do
       allow($stdin).to receive(:gets) { 2 }
+      
       allow(grid).to receive(:has_a_line?) { true }
       allow(grid).to receive(:place_counter)
       
@@ -77,11 +79,11 @@ describe Game do
       end
     end
 
-    context 'when no win' do
+    context 'when no-one has won'   do
       before(:example) do
         allow($stdin).to receive(:gets) { 2 }
         allow(grid).to receive(:has_a_line?).and_return(false, true)
-        allow(grid).to receive(:place_counter).and_return(true)        
+        allow(grid).to receive(:place_counter).and_return(true)                
       end
 
       it 'updates the screen' do  
@@ -147,11 +149,27 @@ describe Game do
         allow($stdin).to receive(:gets) { 2 }
         expect(subject.player_input).to be_an Integer
       end
+
+      it 'converts input to array index' do
+        allow($stdin).to receive(:gets) { "2\n" }
+        expect(subject.player_input).to eq 1
+      end
     end
 
     context 'when receiving a non-numeric input, followed by a numeric input' do   
       it 'repeats input process once' do
         allow($stdin).to receive(:gets).and_return('beans', '2')
+        expect($stdin).to receive(:gets).twice
+        subject.player_input
+      end
+    end
+
+    context 'when receiving an input for a non-legal move' do
+      it 'repeats input process once' do
+        allow($stdin).to receive(:gets).and_return("3\n", "4\n")
+        allow(grid).to receive(:col_full?).with(2).and_return(true)
+        allow(grid).to receive(:col_full?).with(3).and_return(false)
+
         expect($stdin).to receive(:gets).twice
         subject.player_input
       end
@@ -178,6 +196,7 @@ describe Game do
   describe '#render' do
     before do
       @win_msg = "WIN"
+      @draw_msg = "DRAW"
 
       allow(subject).to receive(:system)
     end
@@ -194,6 +213,11 @@ describe Game do
     it 'displays win only when passed :win' do
       expect{ subject.render(:ongoing) }.not_to output(/#{@win_msg}/).to_stdout
       expect{ subject.render(:win) }.to output(/#{@win_msg}/).to_stdout
+    end
+
+    it 'displays draw only when passed :draw' do
+      expect{ subject.render(:ongoing) }.not_to output(/#{@draw_msg}/).to_stdout
+      expect{ subject.render(:draw) }.to output(/#{@draw_msg}/).to_stdout
     end
   end
 end

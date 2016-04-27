@@ -23,15 +23,6 @@ describe Grid do
       2.times { subject.place_counter(3, "X") }
       expect(subject.columns[3][1]).to eq "X"
     end
-
-    it 'raises an error when an invalid column selected' do
-      expect { subject.place_counter(7, "X") }.to raise_error "Invalid move"
-    end
-
-    it 'raises an error when a column is full' do
-      6.times { subject.place_counter(3, "X") }
-      expect { subject.place_counter(3, "X") }.to raise_error "Column full"
-    end
   end
 
   describe '#on_grid?' do 
@@ -57,7 +48,6 @@ describe Grid do
     end
 
     it 'returns false when the grid is not full' do
-      p subject
       expect(subject.full?).to be false
     end
 
@@ -66,7 +56,20 @@ describe Grid do
 
       expect(subject.full?).to be true
     end
+  end
 
+  describe '#col_full?' do
+    subject { Grid.new(2,1) }
+
+    it 'returns false when a column is not full' do
+      expect(subject.col_full?(1)).to be false
+    end
+
+    it 'returns true when the grid is full' do
+      subject.place_counter(1, 'O')
+
+      expect(subject.col_full?(1)).to be true
+    end
   end
 
   describe '#has_a_line?' do

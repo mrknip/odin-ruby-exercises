@@ -6,9 +6,6 @@ class Grid
   end
 
   def place_counter(column, counter)
-    raise "Invalid move" unless columns[column]
-    raise "Column full" unless columns[column].include? nil
-    
     spot = columns[column].index(nil)
     @last_move = [column, spot]
     columns[column][spot] = counter
@@ -18,9 +15,15 @@ class Grid
     @columns[position.first][position.last]
   end
 
+  # Checker methods
   def on_grid?(position)
     return false unless position.first.between?(0, 6) && position.last.between?(0, 5)
     true
+  end
+
+  def col_full?(col)
+    return true unless columns[col].include? nil
+    false
   end
 
   def full?
@@ -28,16 +31,16 @@ class Grid
     false
   end
 
-  def has_a_line?
-    return true if line_in_any_direction? @last_move
-    
-    # This tests all spots
-    # @columns.each_with_index do |col, cidx| 
-    #   col.each_with_index do |row, ridx| 
-    #     return true if full_line_check? [cidx, ridx]
-    #   end
-    # end
-
+  def has_a_line?(move = nil)
+    if move
+      return true if line_in_any_direction? @last_move
+    else
+      @columns.each_with_index do |col, cidx| 
+        col.each_with_index do |row, ridx| 
+          return true if line_in_any_direction? [cidx, ridx]
+        end
+      end
+    end
     false
   end
 

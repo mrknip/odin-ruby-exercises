@@ -26,50 +26,65 @@ class Game
 
       update(@vars[:move], @vars[:current_player])
       check(@vars[:move])
+
       render(@vars[:state])
       switch_player
     end
     game_over
   end
 
-  def switch_player
-    @vars[:current_player] = @vars[:current_player] == @player1 ? @player2 : @player1
-  end
-
   def player_input
-    move = ""
-    until move.is_a? Integer
+    move = :begin
+    until legal?(move)
       prompt
       move = validate!($stdin.gets)
     end
-    move.to_i
+    move
   end
 
   def update(move, player)
     grid.place_counter(move, player)
   end
 
-  def check(move)
-    @vars[:state] = :win if grid.has_a_line?
-    # @vars[:state] = :draw if grid.full?
+  def switch_player
+    @vars[:current_player] = @vars[:current_player] == @player1 ? @player2 : @player1
   end
 
+  # Validation and grid checking helpers
   def validate!(input)
-    input = input.strip =~ /\D/ ? -1 : input.to_i if input.is_a? String
-    input.between?(0,6) ? input : ""
+    input = input.strip =~ /\D/ ? -1 : (input.to_i - 1) if input.is_a? String
+    input
   end
 
+  def check(move)
+    @vars[:state] = :win if grid.has_a_line? @vars[:move]
+    @vars[:state] = :draw if grid.full?
+  end
+
+  def legal?(move)
+    return if move == :begin
+    return error(:no_col) unless move.between?(0,6) 
+    return error(:col_full) if grid.col_full?(move)
+    true
+  end
+
+  def error(type)
+    case type
+    when :no_col then puts "Please enter a valid column (1 - 7)"
+    when :col_full then puts "That column is full"
+    end
+    false
+  end
+
+  # Display methods
   def prompt
     puts "Player: #{@vars[:current_player]}"
     print "Enter a column: "
   end
 
   def render(gamestate)
+    clear_screen
     
-    # Hacked together console display
-    # ===============================
-    #
-    system('cls')
     grid.columns.transpose.reverse.each_with_index do |col, idx| 
       line = []
       col.each do |spot|
@@ -80,9 +95,17 @@ class Game
 
       print "| #{line.join(" | ")} |\n" 
     end
+    
     puts "-----------------------------\n"
-    puts "  0   1   2   3   4   5   6 \n"
+    puts "  1   2   3   4   5   6   7 \n"
+
     puts "WIN!!1!\n".magenta.bold if gamestate == :win
+    puts "DRAW!!1!\n".magenta.bold if gamestate == :draw
+  end
+
+  # Powershell helper methods
+  def clear_screen
+    system('cls')
   end
 
   def game_over
