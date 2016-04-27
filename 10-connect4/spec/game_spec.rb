@@ -2,9 +2,17 @@ require 'spec_helper'
 
 describe Game do
   let(:grid) { subject.grid }
+  let(:player1) { subject.player1 }
+  let(:player2) { subject.player2 }
+
   
+  before(:example) do
+    allow(subject).to receive(:prompt)
+    allow(subject).to receive(:system)
+    allow(subject).to receive(:game_over)
+  end
+
   context 'when initialised without parameters' do
-    
     it 'has a 7x6 grid' do
       expect(grid.columns.size).to eq 7
       expect(grid.columns[0].size).to eq 6
@@ -31,10 +39,6 @@ describe Game do
   end
 
   describe '#play' do
-    let(:grid) { subject.grid }
-    let(:player1) { subject.player1 }
-    let(:player2) { subject.player2 }
-
     before(:example) do
       allow($stdin).to receive(:gets) { 2 }
       
@@ -42,8 +46,7 @@ describe Game do
       allow(grid).to receive(:place_counter)
       
       allow(subject).to receive(:render)
-      allow(subject).to receive(:prompt)
-      allow(subject).to receive(:game_over)
+
     end
 
     it 'takes input' do
@@ -121,7 +124,8 @@ describe Game do
 
   describe '#player_input' do
     before(:example) do 
-      allow(subject).to receive(:prompt)
+      allow(subject).to receive(:error).and_return(false)
+
       allow($stdin).to receive(:gets)
     end
 
@@ -159,6 +163,7 @@ describe Game do
     context 'when receiving a non-numeric input, followed by a numeric input' do   
       it 'repeats input process once' do
         allow($stdin).to receive(:gets).and_return('beans', '2')
+
         expect($stdin).to receive(:gets).twice
         subject.player_input
       end
@@ -177,14 +182,10 @@ describe Game do
   end
 
   describe '#update' do
-    let(:grid) { subject.grid }
-
     before(:example) do
       allow($stdin).to receive(:gets) { "2" }
-      allow(grid).to receive(:has_a_line?) { true }
-      
+      allow(grid).to receive(:has_a_line?) { true }    
       allow(subject).to receive(:render)
-      allow(subject).to receive(:prompt)
     end
 
     it 'sends an integer and symbol to the grid' do
@@ -197,8 +198,6 @@ describe Game do
     before do
       @win_msg = "WIN"
       @draw_msg = "DRAW"
-
-      allow(subject).to receive(:system)
     end
 
     it 'displays a board with no counters when no moves made' do
