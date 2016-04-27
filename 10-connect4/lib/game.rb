@@ -22,7 +22,7 @@ class Game
     render(@vars[:state])
 
     while @vars[:state] == :ongoing
-      player_input
+      @vars[:move] = player_input
 
       update(@vars[:move], @vars[:current_player])
       check(@vars[:move])
@@ -37,12 +37,12 @@ class Game
   end
 
   def player_input
-    until move
+    move = ""
+    until move.is_a? Integer
       prompt
-      move = $stdin.gets
-      validate!(move)
+      move = validate!($stdin.gets)
     end
-    @vars[:move] = move.to_i
+    move.to_i
   end
 
   def update(move, player)
@@ -52,6 +52,11 @@ class Game
   def check(move)
     @vars[:state] = :win if grid.has_a_line?
     # @vars[:state] = :draw if grid.full?
+  end
+
+  def validate!(input)
+    input = input.strip =~ /\D/ ? -1 : input.to_i if input.is_a? String
+    input.between?(0,6) ? input : ""
   end
 
   def prompt
@@ -81,5 +86,6 @@ class Game
   end
 
   def game_over
+    system('exit')
   end
 end

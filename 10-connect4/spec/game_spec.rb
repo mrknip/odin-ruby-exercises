@@ -37,13 +37,15 @@ describe Game do
     before(:example) do
       allow($stdin).to receive(:gets) { 2 }
       allow(grid).to receive(:has_a_line?) { true }
+      allow(grid).to receive(:place_counter)
       
       allow(subject).to receive(:render)
       allow(subject).to receive(:prompt)
+      allow(subject).to receive(:game_over)
     end
 
     it 'takes input' do
-      expect($stdin).to receive(:gets)
+      expect(subject).to receive(:player_input)
 
       subject.play
     end
@@ -68,7 +70,11 @@ describe Game do
         subject.play
       end
 
-      it 'exits the game' 
+      it 'exits the game' do
+        expect(subject).to receive(:game_over)
+
+        subject.play
+      end
     end
 
     context 'when no win' do
@@ -111,15 +117,44 @@ describe Game do
     end
   end
 
-  describe 'player_input' do
-    it 'shows a prompt'
-
-    context 'when input is numeric' do
-      it 'returns an integer'
+  describe '#player_input' do
+    before(:example) do 
+      allow(subject).to receive(:prompt)
+      allow($stdin).to receive(:gets)
     end
 
-    context 'when input is non-numeric' do
-    it 'repeats process if input invalid'
+    context 'before input is validated' do
+      before do
+        allow(subject).to receive(:validate!) { 2 }
+      end
+
+      it 'shows a prompt' do
+        expect(subject).to receive(:prompt)
+        subject.player_input
+      end
+
+      it 'gets input from the player' do
+        expect($stdin).to receive(:gets)
+        subject.player_input
+      end
+    end
+
+    context 'when receiving one numeric input' do
+      it 'returns an integer' do
+        allow($stdin).to receive(:gets) { "2\n" }
+        expect(subject.player_input).to be_an Integer
+
+        allow($stdin).to receive(:gets) { 2 }
+        expect(subject.player_input).to be_an Integer
+      end
+    end
+
+    context 'when receiving a non-numeric input, followed by a numeric input' do   
+      it 'repeats input process once' do
+        allow($stdin).to receive(:gets).and_return('beans', '2')
+        expect($stdin).to receive(:gets).twice
+        subject.player_input
+      end
     end
   end
 
