@@ -34,8 +34,7 @@ describe Grid do
     end
   end
 
-
-  describe 'on_grid?' do 
+  describe '#on_grid?' do 
     it 'returns true for an empty spot' do
       expect(subject.on_grid?([3,3])).to be true  
     end
@@ -77,13 +76,6 @@ describe Grid do
       (0..3).each {|n| subject.place_counter(n, 'X')}
 
       expect(subject).to have_a_line
-    end
-
-    it 'returns false when there are not four in a row' do
-      (0..2).each {|n| subject.place_counter(n, 'X')}
-      (3..5).each {|n| subject.place_counter(n, 'O')}
-
-      expect(subject).not_to have_a_line
     end
 
     it 'returns true when there are four in a diagonal' do
